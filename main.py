@@ -15,12 +15,10 @@ def read_config(path):
     return config
 
 
-
-
 # TODO: Move comments to the help arguments
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--policy", default="TD4")                  # Policy name (TD3, DDPG or OurDDPG)
+    parser.add_argument("--policy", default="STEVE")                  # Policy name (TD3, DDPG or OurDDPG)
     parser.add_argument("--env", default="HalfCheetah-v2")          # OpenAI gym environment name
     parser.add_argument("--seed", default=0, type=int)              # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--batch_size", default=256, type=int)

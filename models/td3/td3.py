@@ -74,7 +74,8 @@ class TD3(object):
         policy_noise=0.2,
         noise_clip=0.5,
         policy_freq=2,
-        device="cuda"
+        device="cuda",
+        **kwargs
     ):
 
         self.actor = Actor(state_dim, action_dim, max_action).to(device)

@@ -1,4 +1,4 @@
-from .td3.td3_trainer import TD3TRainer
+from .td3.trainer import TD3Trainer
 
 
 def load_trainer(config):

@@ -1,1 +1,6 @@
 n_agents: 1
+agent_update: 5_000  # timesteps interval to update the agent policy
+upload_policy: 1_000 # update steps after which learner uploads its weights
+
+learner_device: cuda:0
+agent_device: cuda:0

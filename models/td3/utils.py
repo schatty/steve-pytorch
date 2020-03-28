@@ -3,7 +3,8 @@ import torch
 
 
 class ReplayBuffer(object):
-    def __init__(self, state_dim, action_dim, max_size=int(1e6), device="cuda"):
+    def __init__(self, state_dim, action_dim, max_size=int(1e6),
+                 device="cuda"):
         self.max_size = max_size
         self.ptr = 0
         self.size = 0
@@ -16,7 +17,6 @@ class ReplayBuffer(object):
 
         self.device = device
 
-
     def add(self, state, action, next_state, reward, done):
         self.state[self.ptr] = state
         self.action[self.ptr] = action
@@ -26,7 +26,6 @@ class ReplayBuffer(object):
 
         self.ptr = (self.ptr + 1) % self.max_size
         self.size = min(self.size + 1, self.max_size)
-
 
     def sample(self, batch_size):
         ind = np.random.randint(0, self.size, size=batch_size)

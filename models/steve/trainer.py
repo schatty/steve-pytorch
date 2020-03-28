@@ -1,8 +1,16 @@
 import os
 import torch.multiprocessing as mp
+from torch.multiprocessing import set_start_method
+
+try:
+    set_start_method("spawn")
+    print("spawn success")
+except RuntimeError:
+    print("Failed to set spawn method")
 
 
 from .td3 import TD3
+from .model import Model
 from ..agent import Agent
 from ..utils import ReplayBuffer, Logger
 
@@ -46,6 +54,18 @@ def sampler_worker(config, replay_queue, batch_queue, update_step):
             logger.log_scalar("replay_queue", replay_queue.qsize(), s)
             logger.log_scalar("batch_queue", batch_queue.qsize(), s)
             logger.log_scalar("replay_buffer", len(replay_buffer), s)
+
+
+def model_worker(config, model, batch_queue, update_step):
+    """Dynamics-model learner worker.
+
+    Args:
+        config: configuration dict.
+        batch_queue: queue with batches from buffer.
+        update_step: overall system step (learner update step).
+    """
+    #model = Model(**config)
+    model.train(batch_queue, update_step)
 
 
 def learner_worker(config, policy_class, learner_queue,
@@ -98,6 +118,18 @@ class STEVETrainer:
                 target=sampler_worker,
                 args=(config,
                       replay_queue,
+                      batch_queue,
+                      update_step)
+        )
+        processes.append(p)
+
+        # Model learner
+        model = Model(**config)
+        model.share_memory()
+        p = mp.Process(
+                target=model_worker,
+                args=(config,
+                      model,
                       batch_queue,
                       update_step)
         )

@@ -10,7 +10,7 @@ from ..networks import Actor, Critic
 # Paper: https://arxiv.org/abs/1802.09477
 
 
-class TD3(object):
+class TD3:
     def __init__(
         self,
         state_dim,
@@ -131,12 +131,6 @@ class TD3(object):
             if self.total_it % self.eval_freq == 0:
                 eval_reward = eval_policy(self, self.env_name, self.seed)
                 self.logger.log_scalar("eval_reward", eval_reward, self.total_it)
-
-            del state
-            del action
-            del next_state
-            del reward
-            del not_done
 
     def upload_policy(self, learner_queue):
         print("Uploading new policy")

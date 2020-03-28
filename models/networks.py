@@ -52,3 +52,52 @@ class Critic(nn.Module):
         q1 = F.relu(self.l2(q1))
         q1 = self.l3(q1)
         return q1
+
+
+class ModelState(nn.Module):
+    def __init__(self, state_dim, action_dim):
+        super(ModelState, self).__init__()
+
+        self.l1 = nn.Linear(state_dim + action_dim, 256)
+        self.l2 = nn.Linear(256, 256)
+        self.l3 = nn.Linear(256, 256)
+        self.l4 = nn.Linear(256, state_dim)
+
+    def forward(self, state, action):
+        sa = torch.cat([state, action], 1)
+        a = F.relu(self.l1(sa))
+        a = F.relu(self.l2(a))
+        a = F.relu(self.l3(a))
+        return self.l4(a)
+
+
+class ModelReward(nn.Module):
+    def __init__(self, state_dim, action_dim):
+        super(ModelReward, self).__init__()
+
+        self.l1 = nn.Linear(state_dim + action_dim, 256)
+        self.l2 = nn.Linear(256, 256)
+        self.l3 = nn.Linear(256, 256)
+        self.l4 = nn.Linear(256, 1)
+
+    def forward(self, state, action):
+        sa = torch.cat([state, action], 1)
+        a = F.relu(self.l1(sa))
+        a = F.relu(self.l2(a))
+        a = F.relu(self.l3(a))
+        return self.l4(a)
+
+
+class ModelTerminal(nn.Module):
+    def __init__(self, state_dim, action_dim):
+        super(ModelTerminal, self).__init__()
+
+        self.l1 = nn.Linear(state_dim + action_dim, 256)
+        self.l2 = nn.Linear(256, 256)
+        self.l3 = nn.Linear(256, 1)
+
+    def forward(self, state, action):
+        sa = torch.cat([state, action], 1)
+        a = F.relu(self.l1(sa))
+        a = F.relu(self.l2(a))
+        return torch.sigmoid(self.l3(a))

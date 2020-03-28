@@ -4,8 +4,15 @@ import gym
 import pybulletgym
 import argparse
 import os
+import yaml
 
 from models.trainer import load_trainer
+
+
+def read_config(path):
+    with open(path, 'r') as f:
+        config = yaml.load(f)
+    return config
 
 
 # Runs policy for X episodes and returns average reward
@@ -44,6 +51,7 @@ def parse_args():
     parser.add_argument("--tau", default=0.005)                     # Target network update rate
     parser.add_argument("--device", default="cuda")                 # Name of the GPU device
     parser.add_argument("--eval_freq", default=5e3, type=int) # How often  (time steps) we evaluate
+    parser.add_argument("--config", default="config.yaml")
     args = parser.parse_args()
     return args
 
@@ -64,7 +72,7 @@ if __name__ == "__main__":
     print("Experiment path: ", experiment_path)
     if not os.path.exists(experiment_path):
         os.makedirs(experiment_path)
-    config = vars(args)
+    config = {**read_config(args.config), **vars(args)}
 
     env = gym.make(args.env)
 
